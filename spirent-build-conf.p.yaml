@@ -1,0 +1,9 @@
+---
+- hosts: spirent
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Create configuration for Spirent
+      template: src=spirent/spirent-config.xml dest={{ build_dir }}/spirent-config.xml
+    - name: Move Spirent configuration to config/
+      assemble: src={{ build_dir }} dest=config/spirent-config.xml

@@ -1,0 +1,32 @@
+[all:children]
+juniper
+spirent
+
+[juniper:children]
+qfx5000
+
+#######################
+## Group by type     ##
+#######################
+
+[qfx5000]
+WFD-QFX5100-48S-8   junos_host=10.19.10.21  mgmt_sub_gw=10.19.10.12 mgmt_sub_mask=31
+
+[spirent]
+SPIRENT     spirent_ctrl=10.19.6.220    ansible_ssh_host=10.19.18.106 ansible_ssh_user=jcluser
+
+###################################
+### Define variables per groups ###
+###################################
+
+[spirent:vars]
+ansible_password=9Fx$KNgT
+ansible_ssh_port=5986
+ansible_connection=winrm
+
+[qfx5000:vars]
+mgmt_port=em0
+junos_ssh_user=dgarros
+junos_pwd_clear=9Fx$KNgT
+junos_pwd_enc=xxx
+netconf_port=830

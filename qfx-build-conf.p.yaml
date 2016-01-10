@@ -1,0 +1,14 @@
+---
+- name: Create configuration for QFX devices
+  hosts: juniper
+  connection: local
+  gather_facts: no
+  roles:
+    - jcl-base-config
+    - underlay-ebgp
+    - overlay-evpn-qfx-l2
+    - overlay-evpn-access
+    - analyticsd-junos
+  tasks:
+    - name: Assembling configurations and copying to conf/
+      assemble: src={{ build_dir }} dest={{ junos_conf }}

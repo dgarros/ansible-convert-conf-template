@@ -1,0 +1,16 @@
+---
+- hosts: spirent
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Copy Spirent config to tmp
+      copy: src=spirent/spirent-config-to-templatize.xml dest=/tmp/build/{{ inventory_hostname }}/spirent-config-to-templatize.xml
+
+    - name: Templatize Spirent configuration 1/3
+      replace: dest=/tmp/build/{{ inventory_hostname }}/spirent-config-to-templatize.xml regexp="{{ spirent_ctrl }}" replace='{{ "{{spirent_ctrl}}" }}'
+    - name: Templatize Spirent configuration 2/3
+      replace: dest=/tmp/build/{{ inventory_hostname }}/spirent-config-to-templatize.xml regexp="{{ topology[inventory_hostname].port1.name }}" replace='{{ "{{ topology[inventory_hostname].port1.name }}" }}'
+    - name: Templatize Spirent configuration 3/3
+      replace: dest=/tmp/build/{{ inventory_hostname }}/spirent-config-to-templatize.xml regexp="{{ topology[inventory_hostname].port2.name }}" replace='{{ "{{ topology[inventory_hostname].port2.name }}" }}'
+    - name: Copy Spirent Config to spirent/
+      assemble: src=/tmp/build/{{ inventory_hostname }}/ dest=spirent/spirent-config.xml

@@ -1,0 +1,21 @@
+
+
+# Global Variables used to generate the base configuration
+jcl:
+    root_hash: $1$o4ZOUBvk$WrqFtTYk8i2yfy4ih7xCE0
+    login_message: Welcome, This is device is part of the JCL lab
+    domain_name: jcl.juniper.net
+    time_zone: UTC
+    name_servers:
+    - 10.19.6.15
+    ntp_servers:
+    - 10.19.6.55
+    users:
+    - name: jcladmin
+      uid: 2004
+      class: super-user
+      pwd_hash: $1$s6M.gbyw$DVjzVu9hMXvQ.8hmYnh9C0
+    - name: jnpr
+      uid: 2001
+      class: superuser
+      pwd_hash: $1$ZBLsivau$AGoGSIc5x6bm7ElgBYSP/0

@@ -1,0 +1,11 @@
+####################################
+###   Physical interfaces name   ###
+####################################
+topology:
+    WFD-QFX5100-48S-8:
+        port1: { name: xe-0/0/0,    peer: WFD-SPT-N11U-1,       pport: port1 }
+        port2: { name: xe-0/0/1,    peer: WFD-SPT-N11U-1,       pport: port2 }
+
+    WFD-SPT-N11U-1:
+        port1: { name: '1/05',       peer: WFD-QFX5100-48S-8,    pport: port1 }
+        port2: { name: '1/06',       peer: WFD-QFX5100-48S-8,    pport: port2 }

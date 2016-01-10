@@ -1,0 +1,30 @@
+host:
+    loopback:
+        ip: 1.1.10.1
+
+underlay:
+    local:
+        asn: 60001
+    neighbors:
+      - interface: "{{ topology[inventory_hostname].port1.name }}"
+        name: "{{ topology[inventory_hostname].port1.peer}} - {{ topology[inventory_hostname].port1.pport }}"
+        asn: 60002
+        peer_ip: 171.0.0.0
+        local_ip: 171.0.0.1
+
+access:
+    interfaces:
+        - name: "{{ topology[inventory_hostname].port2.name  }}"
+          mode: trunk
+          vlans: [ 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110 ]
+          description: "{{ topology[inventory_hostname].port2.peer}} - {{ topology[inventory_hostname].port2.pport }}"
+
+overlay:
+    vlan_normalized: false
+    local:
+        asn: 62000
+    neighbors: [ 1.1.10.2 ]
+
+
+analytics:
+    interfaces: [ '{{topology[inventory_hostname].port1.name}}', '{{topology[inventory_hostname].port2.name}}' ]

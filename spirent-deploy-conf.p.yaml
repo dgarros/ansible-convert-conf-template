@@ -1,0 +1,5 @@
+---
+- hosts: spirent
+  tasks:
+    - name: Copy file to Windows server
+      win_copy: src=config_from_device/{{inventory_hostname}}.xml dest=C:\Users\jcluser\Documents\spirent.xml

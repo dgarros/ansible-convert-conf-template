@@ -1,0 +1,5 @@
+---
+- name: Building Analytics configuration for Junos (Analyticsd)
+  template: >
+    src=main.conf.j2
+    dest={{ build_dir }}/analytics.conf.part

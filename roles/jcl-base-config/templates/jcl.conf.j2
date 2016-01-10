@@ -1,0 +1,102 @@
+groups {
+    global {
+        system {
+            login {
+                message "{{ jcl.login_message }} ";
+            }
+            host-name {{ inventory_hostname }};
+            domain-name {{ jcl.domain_name }};
+            time-zone {{ jcl.time_zone }};
+            root-authentication  {
+                encrypted-password "{{ jcl.root_hash }}"; ## SECRET-DATA
+            }
+            name-server {
+{% for name_server in jcl.name_servers %}
+                {{ name_server }};
+{% endfor %}
+            }
+            login {
+{% for user in jcl.users %}
+                user {{ user.name }} {
+                    uid {{ user.uid }};
+                    class {{ user.class }};
+                    authentication {
+                        encrypted-password "{{ user.pwd_hash }}"; ## SECRET-DATA
+                    }
+                }
+{% endfor %}
+            }
+            services {
+                ftp;
+                ssh;
+                telnet;
+                netconf {
+                    ssh;
+                }
+            }
+            syslog {
+                file messages {
+                    any any;
+                    interactive-commands none;
+                    archive size 10m files 10;
+                }
+            }
+            ntp {
+{% for ntp_server in jcl.ntp_servers %}
+                server {{ ntp_server }};
+{% endfor %}
+            }
+        }
+        interfaces {
+            em0 {
+                unit 0 {
+                    family inet {
+                        address {{ junos_host}}/{{ mgmt_sub_mask }};
+                    }
+                }
+            }
+        }
+        routing-options {
+            static {
+                route 0.0.0.0/0 {
+                    next-hop {{ mgmt_sub_gw }};
+                    retain;
+                    no-readvertise;
+                }
+            }
+        }
+    }
+}
+apply-groups global;
+
+system {
+    arp {
+        aging-timer 5;
+    }
+    login {
+        user {{ junos_ssh_user }} {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "{{ junos_pwd_enc }}"; ## SECRET-DATA
+            }
+        }
+    }
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any notice;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+}
+protocols {
+    lldp {
+        interface all;
+    }
+}

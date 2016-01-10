@@ -1,0 +1,5 @@
+---
+
+- include: make_clean.p.yaml
+- include: qfx-build-conf.p.yaml
+- include: spirent-build-conf.p.yaml

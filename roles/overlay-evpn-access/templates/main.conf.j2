@@ -1,0 +1,62 @@
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count 4;
+        }
+    }
+}
+interfaces {
+{% for interface in access.interfaces %}
+    {{ interface.name }} {
+{% if interface.description is defined %}
+        description "to {{ interface.description }}";
+{% endif %}
+{% if interface.esi is defined %}
+        esi {
+            {{ conf.esi }};
+            all-active;
+        }
+{% endif %}
+{% if interface.mode == 'aggregate' %}
+        ether-options {
+            802.3ad {{ conf.parent }};
+        }
+{% elif interface.mode == 'trunk' %}
+        unit 0 {
+            family ethernet-switching {
+                interface-mode {{ interface.mode }};
+                vlan {
+                    members [{% for vlan in  interface.vlans %} {{ vlan }}{% endfor %}];
+                }
+            }
+        }
+{% elif interface.mode == 'normalize' %}
+{% for vlan in  interface.vlans %}
+        flexible-vlan-tagging;
+        unit {{ vlan.vid }} {
+            vlan-id {{ vlan.vid }};
+        }
+{% endfor %}
+{% endif %}
+{% if interface.lacp_mode is defined %}
+        aggregated-ether-options {
+            lacp {
+                {{ interface.lacp_mode }};
+                system-id {{ interface.lacp_system_id }};
+            }
+        }
+{% endif %}
+    }
+{% endfor %}
+}
+{% for interface in access.interfaces %}
+{% if interface.mode == 'normalize' %}
+{% for vlan in  interface.vlans %}
+vlans {
+    bd{{ vlan.vnid }} {
+        interface {{ interface.name }}.{{ vlan.vid }}
+    }
+}
+{% endfor %}
+{% endif %}
+{% endfor %}
